@@ -7,15 +7,17 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 
 public class ParserConfiguration {
 
-    public static ParserConfiguration instance;
+    private static ParserConfiguration instance;
     private String lineDelimiter;
     private String propertyDelimiter;
     private String fieldValueDelimiter;
+    private String objectSeparator;
     private Boolean trimValues = false;
     private Charset charset = StandardCharsets.UTF_8;
     private DateTimeFormatter formatter;
@@ -50,42 +52,25 @@ public class ParserConfiguration {
     public String getPropertyDelimiter() {
         return propertyDelimiter;
     }
-
-    public void setPropertyDelimiter(String propertyDelimiter) {
-        this.propertyDelimiter = propertyDelimiter;
-    }
-
     public String getLineDelimiter() {
         return lineDelimiter;
     }
-
-    public void setLineDelimiter(String lineDelimiter) {
-        this.lineDelimiter = lineDelimiter;
-    }
-
     public String getFieldValueDelimiter() {
         return fieldValueDelimiter;
     }
-
-    public void setFieldValueDelimiter(String fieldValueDelimiter) {
-        this.fieldValueDelimiter = fieldValueDelimiter;
-    }
-
     public Boolean getTrimValues() {return trimValues;}
-
-    public void setTrimValues(Boolean trimValues) {this.trimValues = trimValues;
-    }
-
+    public String getObjectSeparator() {return objectSeparator;}
     public Charset getCharset() {return charset;}
-
-    public void setCharset(Charset charset) {this.charset = charset;}
+    public DateTimeFormatter getFormatter() { return formatter; }
 
     private void setAttributesFromProperties(Properties properties) {
         instance.lineDelimiter = properties.get("tto.parser.line.delimiter").toString();
-        instance.propertyDelimiter = properties.get("tto.parser.field.delimiter").toString();
-        instance.fieldValueDelimiter = properties.get("tto.parser.field.valuedelimiter").toString();
+        instance.propertyDelimiter = properties.get("tto.parser.property.delimiter").toString();
+        instance.fieldValueDelimiter = properties.get("tto.parser.field.delimiter").toString();
         instance.trimValues = Boolean.parseBoolean(properties.get("parser.field.trimValues").toString());
         instance.charset = handleCharsets(properties.get("tto.parser.charset").toString());
+        instance.formatter = DateTimeFormatter.ofPattern(properties.get("tto.parser.dateTimeFormat").toString());
+        instance.objectSeparator = properties.get("tto.parser.object.separator").toString();
 
     }
 

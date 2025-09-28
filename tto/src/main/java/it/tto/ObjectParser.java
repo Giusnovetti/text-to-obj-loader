@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.rmi.NoSuchObjectException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -79,6 +80,7 @@ public class ObjectParser<T>{
                         case "String" -> field.set(instance, value);
                         case "BigDecimal" -> field.set(instance, new BigDecimal(value));
                         case "BigInteger" -> field.set(instance, new BigInteger(value));
+                        case "LocalDateTime" -> field.set(instance, LocalDateTime.parse(value, parserConfiguration.getFormatter()));
                         default -> throw new IllegalArgumentException("Unsupported field type: " + field.getType().getSimpleName());
                     }
 
