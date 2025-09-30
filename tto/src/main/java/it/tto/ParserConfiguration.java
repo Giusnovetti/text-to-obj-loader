@@ -3,11 +3,11 @@ package it.tto;
 
 
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -18,34 +18,43 @@ public class ParserConfiguration {
     private String propertyDelimiter;
     private String fieldValueDelimiter;
     private String objectSeparator;
-    private Boolean trimValues = false;
-    private Charset charset = StandardCharsets.UTF_8;
+    private String arrayDelimiter;
+    private Boolean trimValues;
+    private Charset charset;
     private DateTimeFormatter formatter;
+    private boolean locked ;
 
     private ParserConfiguration(){}
 
 
-    public static ParserConfiguration load(String propFileLocation) throws IOException {
-        if(instance == null){
-            Properties properties = FileReader.readProperties(propFileLocation);
-            instance = new ParserConfiguration();
-            instance.setAttributesFromProperties(properties);
-        }
+    public static ParserConfiguration load(String propFileLocation) throws IOException, ParserConfigurationException {
+
+
+
+        if(instance != null && instance.locked)
+            throw new ParserConfigurationException("Configuration already done!");
+
+        Properties properties = FileReader.readProperties(propFileLocation);
+        instance = new ParserConfiguration();
+        instance.setAttributesFromProperties(properties);
         return instance ;
     }
 
-    public static ParserConfiguration load(Properties properties){
-        if(instance == null){
-            instance = new ParserConfiguration();
-            instance.setAttributesFromProperties(properties);
-        }
+    public static ParserConfiguration load(Properties properties) throws ParserConfigurationException {
+        if(instance != null && instance.locked)
+            throw new ParserConfigurationException("Configuration already done!");
+
+        instance = new ParserConfiguration();
+        instance.setAttributesFromProperties(properties);
         return instance ;
     };
 
-    public static ParserConfiguration getInstance(){
-        if(instance == null){
-            instance = new ParserConfiguration();
-        }
+    public static ParserConfiguration load() throws ParserConfigurationException {
+        if(instance != null && instance.locked)
+            throw new ParserConfigurationException("Configuration already done!");
+
+        instance = new ParserConfiguration();
+        instance.setDefaultProps();
         return instance ;
     }
 
@@ -72,6 +81,17 @@ public class ParserConfiguration {
         instance.formatter = DateTimeFormatter.ofPattern(properties.get("tto.parser.dateTimeFormat").toString());
         instance.objectSeparator = properties.get("tto.parser.object.separator").toString();
 
+    }
+
+    private void setDefaultProps(){
+        instance.lineDelimiter = "\n";
+        instance.objectSeparator = "\n\n";
+        instance.formatter = DateTimeFormatter.ISO_DATE;
+        instance.fieldValueDelimiter = "=";
+        instance.trimValues = false;
+        instance.charset = StandardCharsets.UTF_8;
+        instance.locked = true;
+        instance.propertyDelimiter="\n";
     }
 
     private static Charset handleCharsets(String charsetProp){

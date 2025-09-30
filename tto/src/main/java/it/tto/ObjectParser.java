@@ -32,7 +32,7 @@ public class ObjectParser<T>{
             throw new NoSuchObjectException("parser configuration for text files is missing!");
 
         String content = new String(file, parserConfiguration.getCharset());
-        String[] objectsAsString = content.split("\\R");
+        String[] objectsAsString = content.split(parserConfiguration.getObjectSeparator());
 
         for (String object : objectsAsString) {
             Map<String, String> objectAttributes = buildObjectAttributes(object);
@@ -51,7 +51,7 @@ public class ObjectParser<T>{
         for(String field : fields){
 
             String attributeName = field.substring(0, field.indexOf(parserConfiguration.getFieldValueDelimiter()));
-            String attributeValue = field.substring(field.indexOf(parserConfiguration.getFieldValueDelimiter()) +1);
+            String attributeValue = field.substring(field.indexOf(parserConfiguration.getFieldValueDelimiter()) + 1);
             objectAttributes.put(attributeName,attributeValue);
         }
         return objectAttributes;
