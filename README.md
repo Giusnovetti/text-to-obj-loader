@@ -1,16 +1,16 @@
-#Text To Object Loader
+# Text To Object Loader
 a simple Java 17 library that provides a tool to instantiate objects from a text file.
 
-#Main Components
+# Main Components
 
-# ObjectParser
+## ObjectParser
 
 `ObjectParser<T>` is a generic Java utility for parsing plain-text files into Java objects of type `T`.  
 It uses reflection to map string-based attributes from a file into strongly-typed fields of the target class.
 
 ---
 
-## Features
+### Features
 
 - Generic: works with any class that has a **no-argument constructor**.  
 - Configurable: parsing is guided by a `ParserConfiguration` instance.  
